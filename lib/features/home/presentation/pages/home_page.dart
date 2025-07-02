@@ -7,6 +7,7 @@ import 'package:pixel_scan/features/home/presentation/widgets/document_list.dart
 import 'package:pixel_scan/features/home/presentation/widgets/empty_list_placeholder.dart';
 import 'package:pixel_scan/features/home/presentation/widgets/scan_fab.dart';
 import 'package:pixel_scan/features/home/presentation/widgets/search_field.dart';
+import 'package:open_file/open_file.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -52,7 +53,21 @@ class HomePage extends StatelessWidget {
                       if (state.documents.isEmpty) {
                         return const EmptyListPlaceholder();
                       }
-                      return DocumentList(documents: state.documents);
+                      return DocumentList(
+                        documents: state.documents,
+                        onDocumentTap: (document) {
+                          if (document.pdfPath != null &&
+                              document.pdfPath!.isNotEmpty) {
+                            OpenFile.open(document.pdfPath);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('PDF файл еще не создан'),
+                              ),
+                            );
+                          }
+                        },
+                      );
                     }
 
                     return const SizedBox.shrink();
